@@ -26,7 +26,7 @@ album_database = {
 # ------------------------------------------------------------------
 # ② 初期設定：Streamlit 表示
 # ------------------------------------------------------------------
-st.title("ARMusic - アルバムジャケット認識")
+st.title("PortableMusic - アルバムジャケット認識")
 
 # ------------------------------------------------------------------
 # ③ ユーザー入力：カメラ画像取得
@@ -45,7 +45,7 @@ def compute_upload_phash(uploaded_image: Image.Image):
     """
     return imagehash.phash(uploaded_image)
 
-def find_best_match(uploaded_phash, album_features, threshold=10):
+def find_best_match(uploaded_phash, album_features, threshold=20):
     """
     事前データの各アルバムの pHash とアップロード画像の pHash の hamming 距離で照合し、
     最も距離が短い（＝類似度が高い）アルバムを返します。  
