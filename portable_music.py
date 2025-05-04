@@ -45,7 +45,7 @@ def compute_upload_phash(uploaded_image: Image.Image):
     """
     return imagehash.phash(uploaded_image)
 
-def find_best_match(uploaded_phash, album_features, threshold=25):
+def find_best_match(uploaded_phash, album_features, threshold=23):
     """
     事前データの各アルバムの pHash とアップロード画像の pHash の hamming 距離で照合し、
     最も距離が短い（＝類似度が高い）アルバムを返します。  
