@@ -2,3 +2,5 @@ streamlit
 Pillow
 imagehash
 numpy
+opencv-python
+torch
