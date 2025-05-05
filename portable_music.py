@@ -39,13 +39,14 @@ if uploaded_file is not None:
     
     # 画像のサイズから中央正方形を計算し、切り抜く
     width, height = original_image.size
+    factor = 0.8
     side = min(width, height)
     left = (width - side) // 2
     top = (height - side) // 2
     cropped_image = original_image.crop((left, top, left + side, top + side))
     
     # 切り抜いた画像を表示
-    st.image(cropped_image, caption='中央正方形領域を抽出した画像', use_container_width=True)
+    st.image(cropped_image, caption='識別範囲', use_container_width=True)
 
 # ------------------------------------------------------------------
 # ④ ユーティリティ関数：pHash 計算と比較
@@ -82,7 +83,6 @@ def find_best_match(uploaded_phash, album_features, threshold=23):
 # ------------------------------------------------------------------
 if uploaded_file is not None:
     # ※すでに 'cropped_image' は先のブロックで作成済みなので、それを利用
-    st.image(cropped_image, caption="切り抜いた画像", use_container_width=True)
     
     # 切り抜いた画像から pHash を計算
     uploaded_phash = compute_upload_phash(cropped_image)
