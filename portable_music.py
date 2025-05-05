@@ -33,6 +33,16 @@ st.title("PortableMusic - アルバムジャケット認識")
 # ------------------------------------------------------------------
 uploaded_file = st.camera_input("カメラでアルバムジャケットを撮影してください")
 
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    width, height = image.size
+    side = min(width, height)
+    # 画像の中央領域を計算
+    left = (width - side) // 2
+    top = (height - side) // 2
+    cropped_image = image.crop((left, top, left + side, top + side))
+    st.image(cropped_image, caption='中央正方形領域を抽出した画像')
+
 # テスト用：ファイルアップローダーに切り替え（コメントアウトも可能）
 #uploaded_file = st.file_uploader("テスト画像をアップロードしてください", type=["jpg", "png"])
 
