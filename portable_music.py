@@ -34,17 +34,18 @@ st.title("PortableMusic - アルバムジャケット認識")
 uploaded_file = st.camera_input("カメラでアルバムジャケットを撮影してください")
 
 if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    width, height = image.size
+    # アップロードされた画像を Pillow Image オブジェクトとして取得
+    original_image = Image.open(uploaded_file)
+    
+    # 画像のサイズから中央正方形を計算し、切り抜く
+    width, height = original_image.size
     side = min(width, height)
-    # 画像の中央領域を計算
     left = (width - side) // 2
     top = (height - side) // 2
-    cropped_image = image.crop((left, top, left + side, top + side))
-    st.image(cropped_image, caption='中央正方形領域を抽出した画像')
-
-# テスト用：ファイルアップローダーに切り替え（コメントアウトも可能）
-#uploaded_file = st.file_uploader("テスト画像をアップロードしてください", type=["jpg", "png"])
+    cropped_image = original_image.crop((left, top, left + side, top + side))
+    
+    # 切り抜いた画像を表示
+    st.image(cropped_image, caption='中央正方形領域を抽出した画像', use_container_width=True)
 
 # ------------------------------------------------------------------
 # ④ ユーティリティ関数：pHash 計算と比較
@@ -66,11 +67,11 @@ def find_best_match(uploaded_phash, album_features, threshold=23):
     for album_img, features in album_features.items():
         # JSON に保存されている pHash は文字列なので、ImageHash オブジェクトに変換
         reference_phash = imagehash.hex_to_hash(features["pHash"])
-        distance = uploaded_phash - reference_phash  # hamming distance を算出
+        distance = uploaded_phash - reference_phash  # hamming distance の算出
         if best_distance is None or distance < best_distance:
             best_distance = distance
             best_match = album_img
-    # 閾値を超えていればマッチなしと判断
+    # 閾値以下ならマッチあり
     if best_distance is not None and best_distance <= threshold:
         return best_match, best_distance
     else:
@@ -80,14 +81,11 @@ def find_best_match(uploaded_phash, album_features, threshold=23):
 # ⑤ 画像認識 & 動画表示処理
 # ------------------------------------------------------------------
 if uploaded_file is not None:
-    # アップロードされた画像を Pillow Image オブジェクトとして取得
-    uploaded_image = Image.open(uploaded_file)
+    # ※すでに 'cropped_image' は先のブロックで作成済みなので、それを利用
+    st.image(cropped_image, caption="切り抜いた画像", use_container_width=True)
     
-    # 画面にアップロード画像を表示
-    st.image(uploaded_image, caption="アップロード画像", use_container_width=True)
-    
-    # アップロード画像の pHash を計算
-    uploaded_phash = compute_upload_phash(uploaded_image)
+    # 切り抜いた画像から pHash を計算
+    uploaded_phash = compute_upload_phash(cropped_image)
     
     # 事前情報と比較（hamming distance により類似アルバムを検索）
     matched_album, distance = find_best_match(uploaded_phash, album_features)
