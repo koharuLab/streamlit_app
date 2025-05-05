@@ -39,7 +39,7 @@ if uploaded_file is not None:
     
     # 画像のサイズから中央正方形を計算し、切り抜く
     width, height = original_image.size
-    factor = 0.8
+    factor = 0.7
     side = min(width, height)
     left = (width - side) // 2
     top = (height - side) // 2
